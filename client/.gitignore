@@ -22,3 +22,28 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backend / Environment
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+
+# Python / ML (future use)
+__pycache__/
+*.pyc
+venv/
+.env/
+*.pkl
+
+# Database (if local files ever used)
+*.sqlite
+*.db
+
+# OS files
+Thumbs.db
+
+# Logs (extra safety)
+*.log
