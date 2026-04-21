@@ -1,49 +1,53 @@
+# =========================
 # Logs
+# =========================
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# =========================
+# Node / Frontend / Backend
+# =========================
+node_modules/
+dist/
+dist-ssr/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Backend / Environment
+# =========================
+# Environment variables
+# =========================
 .env
 .env.local
 .env.*.local
 
-# Node
-node_modules/
+# =========================
+# Editor / OS files
+# =========================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
 
-# Python / ML (future use)
+# =========================
+# Python / ML Service
+# =========================
+ml-service/venv/
+ml-service/__pycache__/
+ml-service/*.pyc
+ml-service/*.pkl
+
+# =========================
+# General Python (backup)
+# =========================
 __pycache__/
 *.pyc
 venv/
-.env/
-*.pkl
 
-# Database (if local files ever used)
+# =========================
+# Database (if used locally)
+# =========================
 *.sqlite
 *.db
-
-# OS files
-Thumbs.db
-
-# Logs (extra safety)
-*.log
