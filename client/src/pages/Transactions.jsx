@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BackgroundLayout from "../components/BackgroundLayout";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -21,11 +22,14 @@ const Transactions = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 🔍 Search + Filter logic
+  // 🔍 Search + Filter
   const filteredTransactions = transactions.filter((tx) => {
+    const location = tx.location || "";
+    const currency = tx.currency || "";
+
     const matchesSearch =
-      tx.location.toLowerCase().includes(search.toLowerCase()) ||
-      tx.currency?.toLowerCase().includes(search.toLowerCase());
+      location.toLowerCase().includes(search.toLowerCase()) ||
+      currency.toLowerCase().includes(search.toLowerCase());
 
     const matchesFilter =
       filter === "all" ||
@@ -36,79 +40,121 @@ const Transactions = () => {
   });
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">All Transactions</h1>
+    <BackgroundLayout>
+      <div className="p-6 text-white">
 
-      {/* 🔍 Search + Filter */}
-      <div className="flex gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search by location or currency..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded w-1/3"
-        />
+        {/* HEADER */}
+        <h1 className="text-3xl font-bold mb-6">
+          Transactions
+        </h1>
 
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="border p-2 rounded"
-        >
-          <option value="all">All</option>
-          <option value="fraud">Fraud</option>
-          <option value="safe">Safe</option>
-        </select>
-      </div>
+        {/* 🔍 Search + Filter */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <input
+            type="text"
+            placeholder="Search by location or currency..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="p-2 rounded-lg w-full md:w-1/3 bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none"
+          />
 
-      {/* 📊 Table */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b bg-gray-100">
-              <th className="p-3">Amount</th>
-              <th className="p-3">Currency</th>
-              <th className="p-3">Location</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Reasons</th>
-            </tr>
-          </thead>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="p-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none"
+          >
+            <option value="all" className="text-black">All</option>
+            <option value="fraud" className="text-black">Fraud</option>
+            <option value="safe" className="text-black">Safe</option>
+          </select>
+        </div>
 
-          <tbody>
-            {filteredTransactions.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="p-4 text-center text-gray-500">
-                  No transactions found
-                </td>
+        {/* 📊 TABLE */}
+        <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/20">
+          <table className="w-full text-left border-collapse">
+
+            <thead>
+              <tr className="border-b border-white/20 text-gray-300">
+                <th className="p-3">Amount</th>
+                <th className="p-3">Currency</th>
+                <th className="p-3">Location</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Fraud Score</th>
+                <th className="p-3">Time</th>
+                <th className="p-3">Reasons</th>
               </tr>
-            ) : (
-              filteredTransactions.map((tx) => (
-                <tr key={tx.id} className="border-b hover:bg-gray-50">
-                  <td className="p-3">{tx.amount}</td>
-                  <td className="p-3">{tx.currency || "-"}</td>
-                  <td className="p-3">{tx.location}</td>
+            </thead>
 
-                  <td className="p-3">
-                    {tx.is_fraud ? (
-                      <span className="text-red-500 font-semibold">
-                        🚨 Fraud
-                      </span>
-                    ) : (
-                      <span className="text-green-600 font-medium">
-                        ✅ Safe
-                      </span>
-                    )}
-                  </td>
-
-                  <td className="p-3">
-                    {tx.reasons?.join(", ") || "-"}
+            <tbody>
+              {filteredTransactions.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="p-4 text-center text-gray-300">
+                    No transactions found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredTransactions.map((tx) => (
+                  <tr
+                    key={tx.id}
+                    className="border-b border-white/10 hover:bg-white/5 transition"
+                  >
+                    <td className="p-3 font-medium">
+                      {tx.amount}
+                    </td>
+
+                    <td className="p-3">
+                      {tx.currency || "-"}
+                    </td>
+
+                    <td className="p-3">
+                      {tx.location}
+                    </td>
+
+                    <td className="p-3">
+                      {tx.is_fraud ? (
+                        <span className="text-red-400 font-semibold">
+                          🚨 Fraud
+                        </span>
+                      ) : (
+                        <span className="text-green-400">
+                          ✅ Safe
+                        </span>
+                      )}
+                    </td>
+
+                    {/* 🔥 FRAUD SCORE */}
+                    <td className="p-3">
+                      <span
+                        className={
+                          tx.fraud_score > 0.5
+                            ? "text-red-400 font-bold"
+                            : tx.fraud_score > 0.3
+                            ? "text-orange-400 font-semibold"
+                            : "text-green-400"
+                        }
+                      >
+                        {(tx.fraud_score ?? 0).toFixed(2)}
+                      </span>
+                    </td>
+
+                    {/* 🕒 TIME */}
+                    <td className="p-3 text-sm text-gray-300">
+                      {new Date(tx.created_at).toLocaleTimeString()}
+                    </td>
+
+                    <td className="p-3 text-sm text-gray-300">
+                      {tx.reasons?.join(", ") || "-"}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+
+          </table>
+        </div>
+
       </div>
-    </div>
+    </BackgroundLayout>
   );
 };
 

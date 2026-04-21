@@ -30,7 +30,7 @@ function App() {
       <Layout>
         <Routes>
           {/* Login */}
-          <Route path="/" element={<Login />} />
+         <Route path="/" element={<Login key={window.location.pathname} />} />
 
           {/* Protected Routes */}
           <Route

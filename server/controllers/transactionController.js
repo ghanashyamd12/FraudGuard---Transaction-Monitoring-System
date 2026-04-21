@@ -4,7 +4,7 @@ const pool = require("../db/db");
 // 🔹 Add Transaction
 const addTransaction = async (req, res) => {
   try {
-    const { amount, location } = req.body;
+    const { amount, location, currency } = req.body;
 
     if (amount === undefined || !location) {
       return res.status(400).json({
@@ -12,19 +12,23 @@ const addTransaction = async (req, res) => {
       });
     }
 
-    const result = detectFraud({ amount, location });
+    // 🔥 IMPORTANT: await (since detectFraud is async now)
+    const result = await detectFraud({ amount, location });
 
     const query = `
-      INSERT INTO transactions (amount, location, is_fraud, reasons)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO transactions 
+      (amount, location, currency, is_fraud, reasons, fraud_score)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
 
     const values = [
       amount,
       location,
+      currency || "USD", // fallback
       result.isFraud,
       result.reasons,
+      result.fraudScore,
     ];
 
     const dbResponse = await pool.query(query, values);
@@ -42,6 +46,7 @@ const addTransaction = async (req, res) => {
     });
   }
 };
+
 
 // 🔹 Get All Transactions
 const getTransactions = async (req, res) => {
@@ -62,6 +67,7 @@ const getTransactions = async (req, res) => {
     });
   }
 };
+
 
 // ✅ Export BOTH
 module.exports = { addTransaction, getTransactions };
