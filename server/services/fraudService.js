@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const HIGH_AMOUNT_THRESHOLD = 10000;
 const SUSPICIOUS_LOCATIONS = ["Unknown", "Offshore"];
-const ML_API_URL = "http://127.0.0.1:5001/predict";
+const ML_API_URL = "http://ml:5001/predict";
 
 // 🔥 Main fraud detection function
 const detectFraud = async (transaction) => {

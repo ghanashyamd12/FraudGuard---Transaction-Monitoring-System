@@ -52,3 +52,5 @@ venv/
 # =========================
 *.sqlite
 *.db
+.env
+server/.env
