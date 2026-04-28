@@ -60,30 +60,28 @@ It is deployed on **AWS EC2** with container auto-restart, ensuring high availab
 
 ## 🧱 System Architecture
 
-graph TD
-    subgraph Frontend [Client]
-        React[React Frontend<br/>Port: 5173]
-    end
-
-    subgraph Backend [Server]
-        Node[Node.js Backend<br/>Port: 5000]
-    end
-
-    subgraph Services [Data & AI]
-        ML[ML Service<br/>Python / Port: 5001]
-        DB[(PostgreSQL DB<br/>Port: 5432)]
-    end
-
-    User((User)) -->|HTTP/HTTPS| React
-    React -->|API Requests| Node
-    Node -->|Inference/Data| ML
-    Node -->|CRUD Operations| DB
-
-    style User fill:#f9f,stroke:#333,stroke-width:2px
-    style React fill:#61dafb,stroke:#333
-    style Node fill:#8cc84b,stroke:#333
-    style ML fill:#ffcc00,stroke:#333
-    style DB fill:#336791,stroke:#fff,color:#fff
+┌───────────────────────────┐
+       │      User / Browser       │
+       └─────────────┬─────────────┘
+                     │
+               HTTP/HTTPS (5173)
+                     ↓
+       ┌───────────────────────────┐
+       │      React Frontend       │
+       └─────────────┬─────────────┘
+                     │
+               API Requests (5000)
+                     ↓
+       ┌───────────────────────────┐
+       │      Node.js Backend      │
+       └──────┬─────────────┬──────┘
+              │             │
+      Inference (5001)   CRUD (5432)
+              ↓             ↓
+       ┌────────────┐ ┌─────────────┐
+       │ ML Service │ │ Postgres DB │
+       │  (Python)  │ │  (Storage)  │
+       └────────────┘ └─────────────┘
 
 
 ## 🔑 Demo Credentials
