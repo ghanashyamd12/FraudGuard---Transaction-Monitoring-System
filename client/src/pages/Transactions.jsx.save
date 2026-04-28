@@ -9,7 +9,7 @@ const Transactions = () => {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch(`${API_URL}/api/transactions`)
+      fetch("http://localhost:5000/api/transactions")
         .then((res) => res.json())
         .then((data) => {
           setTransactions(data.transactions || []);

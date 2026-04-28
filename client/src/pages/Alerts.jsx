@@ -1,3 +1,4 @@
+import API_URL from "../config/api";
 import { useEffect, useState } from "react";
 import BackgroundLayout from "../components/BackgroundLayout";
 
@@ -6,7 +7,7 @@ const Alerts = () => {
 
   useEffect(() => {
     const fetchAlerts = () => {
-      fetch("http://localhost:5000/api/transactions")
+      fetch(`${API_URL}/api/transactions`)
         .then((res) => res.json())
         .then((data) => {
           const fraudOnly = (data.transactions || []).filter(

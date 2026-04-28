@@ -1,3 +1,4 @@
+import API_URL from "../config/api";
 import { useEffect, useState } from "react";
 import {
   PieChart,
@@ -10,6 +11,13 @@ import BackgroundLayout from "../components/BackgroundLayout";
 
 const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
+  const [formData, setFormData] = useState({
+  amount: "",
+  location: "",
+  currency: "USD",
+});
+const [loading, setLoading] = useState(false);
+const [adding, setAdding] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
     fraud: 0,
@@ -18,7 +26,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch("http://localhost:5000/api/transactions")
+      fetch(`${API_URL}/api/transactions`)
         .then((res) => res.json())
         .then((data) => {
           const tx = data.transactions || [];
@@ -33,7 +41,9 @@ const Dashboard = () => {
         })
         .catch((err) => console.error(err));
     };
-
+      if (transactions.length === 0) {
+    generateTransactions();
+  }
     fetchData();
     const interval = setInterval(fetchData, 5000);
 
@@ -44,6 +54,70 @@ const Dashboard = () => {
     { name: "Fraud", value: stats.fraud },
     { name: "Safe", value: stats.safe },
   ];
+const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+const addTransaction = async () => {
+  if (!formData.amount || !formData.location) {
+    alert("Please enter amount and location");
+    return;
+  }
+
+  setAdding(true);
+
+  try {
+    await fetch(`${API_URL}/api/transactions/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: Number(formData.amount),
+        location: formData.location,
+        currency: formData.currency || "USD",
+      }),
+    });
+
+    setFormData({
+      amount: "",
+      location: "",
+      currency: "USD",
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
+
+  setAdding(false);
+};
+const generateTransactions = async () => {
+  setLoading(true);
+
+  const locations = ["Mumbai", "Delhi", "New York", "London", "Dubai"];
+
+  try {
+    for (let i = 0; i < 10; i++) {
+      await fetch(`${API_URL}/api/transactions/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: Math.floor(Math.random() * 100000),
+          location: locations[Math.floor(Math.random() * locations.length)],
+          currency: "USD",
+        }),
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  setLoading(false);
+};
 
   return (
     <BackgroundLayout>
@@ -53,7 +127,43 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold mb-8">
           FraudGuard Dashboard
         </h1>
+         <div className="mb-6 bg-white/10 backdrop-blur-xl p-4 rounded-xl border border-white/10">
 
+  <h2 className="font-semibold mb-3">Simulate Transaction</h2>
+
+  <input
+    type="number"
+    name="amount"
+    placeholder="Amount"
+    value={formData.amount}
+    onChange={handleChange}
+    className="p-2 mr-2 rounded text-black"
+  />
+
+  <input
+    type="text"
+    name="location"
+    placeholder="Location"
+    value={formData.location}
+    onChange={handleChange}
+    className="p-2 mr-2 rounded text-black"
+  />
+
+  <button
+  onClick={addTransaction}
+  className="bg-indigo-500 px-4 py-2 rounded text-white"
+>
+  {adding ? "Adding..." : "Add Transaction"}
+</button>
+
+  <button
+  onClick={generateTransactions}
+  className="bg-green-500 px-4 py-2 rounded text-white ml-2"
+>
+  {loading ? "Generating..." : "Generate Sample Data"}
+</button>
+
+</div>
         {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
