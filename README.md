@@ -61,22 +61,20 @@ It is deployed on **AWS EC2** with container auto-restart, ensuring high availab
 ## 🧱 System Architecture
 
 graph TD
-    User((User / Browser))
-    
-    subgraph Frontend
+    subgraph Frontend [Client]
         React[React Frontend<br/>Port: 5173]
     end
-    
-    subgraph Backend
+
+    subgraph Backend [Server]
         Node[Node.js Backend<br/>Port: 5000]
     end
-    
-    subgraph Services
+
+    subgraph Services [Data & AI]
         ML[ML Service<br/>Python / Port: 5001]
         DB[(PostgreSQL DB<br/>Port: 5432)]
     end
 
-    User -->|HTTP/HTTPS| React
+    User((User)) -->|HTTP/HTTPS| React
     React -->|API Requests| Node
     Node -->|Inference/Data| ML
     Node -->|CRUD Operations| DB
