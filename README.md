@@ -60,30 +60,30 @@ It is deployed on **AWS EC2** with container auto-restart, ensuring high availab
 
 ## 🧱 System Architecture
 
-+-----------------------------+
-|        User / Browser       |
-+--------------+--------------+
-               |
-               | (HTTP/HTTPS)
-               v
-+-----------------------------+
-|        React Frontend       |
-|         (Port 5173)         |
-+--------------+--------------+
-               |
-               | (API Requests)
-               v
-+-----------------------------+
-|       Node.js Backend       |
-|         (Port 5000)         |
-+-------+--------------+------+
-        |              |
-        |              |
-+-------v-----+  +-----v-------+
-|  ML Service |  | PostgreSQL  |
-|   (Python)  |  |     DB      |
-|  Port 5001  |  |  Port 5432  |
-+-------------+  +-------------+
+The system follows a microservices-based architecture consisting of four main components:
+
+### 1. Frontend (React)
+- Built using React (Vite) and Tailwind CSS  
+- Runs on Port 5173  
+- Provides dashboard, transactions, and alerts UI  
+- Communicates with backend via REST APIs  
+
+### 2. Backend (Node.js)
+- Built using Express.js  
+- Runs on Port 5000  
+- Handles API requests from frontend  
+- Sends transaction data to ML service  
+- Stores processed data in PostgreSQL  
+
+### 3. Machine Learning Service (Python)
+- Runs on Port 5001  
+- Processes transaction data  
+- Returns fraud score, classification, and reasons  
+
+### 4. Database (PostgreSQL)
+- Runs on Port 5432  
+- Stores all transaction data  
+- Maintains fraud results and history  
 
 ## 🔑 Demo Credentials
 
