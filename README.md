@@ -60,29 +60,30 @@ It is deployed on **AWS EC2** with container auto-restart, ensuring high availab
 
 ## 🧱 System Architecture
 
-┌───────────────────────────┐
-       │      User / Browser       │
-       └─────────────┬─────────────┘
-                     │
-               HTTP/HTTPS (5173)
-                     ↓
-       ┌───────────────────────────┐
-       │      React Frontend       │
-       └─────────────┬─────────────┘
-                     │
-               API Requests (5000)
-                     ↓
-       ┌───────────────────────────┐
-       │      Node.js Backend      │
-       └──────┬─────────────┬──────┘
-              │             │
-      Inference (5001)   CRUD (5432)
-              ↓             ↓
-       ┌────────────┐ ┌─────────────┐
-       │ ML Service │ │ Postgres DB │
-       │  (Python)  │ │  (Storage)  │
-       └────────────┘ └─────────────┘
-
++-----------------------------+
+|        User / Browser       |
++--------------+--------------+
+               |
+               | (HTTP/HTTPS)
+               v
++-----------------------------+
+|        React Frontend       |
+|         (Port 5173)         |
++--------------+--------------+
+               |
+               | (API Requests)
+               v
++-----------------------------+
+|       Node.js Backend       |
+|         (Port 5000)         |
++-------+--------------+------+
+        |              |
+        |              |
++-------v-----+  +-----v-------+
+|  ML Service |  | PostgreSQL  |
+|   (Python)  |  |     DB      |
+|  Port 5001  |  |  Port 5432  |
++-------------+  +-------------+
 
 ## 🔑 Demo Credentials
 
