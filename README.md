@@ -1,7 +1,7 @@
 # 🚀 FraudGuard — Transaction Monitoring & Fraud Detection System
 
 ## 🌐 Live Demo
-👉 http://65.1.114.40:5173
+👉 http://43.205.62.212:5173/
 
 ---
 
