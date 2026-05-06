@@ -18,6 +18,7 @@ services:
       - db
       - ml
     restart: always
+
   ml:
     build: ./ml-service
     ports:
